@@ -9,8 +9,6 @@ const cors = require('cors');
 
 const config = require('./config');
 
-const funcs = require('./functions');
-
 // Use the express application.
 const app = express();
 
@@ -25,22 +23,7 @@ app.use(favicon('./favicon.png'));
 app.use(bodyParser.urlencoded({extended: true, limit: '16mb'}));
 app.use(bodyParser.json({limit: '16mb'}));
 
-app.post('/form/:formId', (req, res, next) => {
-  funcs.getForm(req.url).then(form => {
-    funcs.xpathToFormio(req.body.data, form.components).then(data => {
-      funcs.validateForm(req.url, {data}).then(result => {
-        if (typeof result === 'boolean') {
-          return res.send(result);
-        }
-        else {
-          funcs.translateError(result, form.components, req.body.data).then(error => {
-            res.status(400).send(error);
-          }).catch(err => res.send(400, err));
-        }
-      }).catch(err => res.send(400, err));
-    }).catch(err => res.send(400, err));
-  }).catch(err => res.send(400, err));
-});
+app.post('/form/:formId', require('./middleware/formValidator'));
 
 app.use((req, res) => {
   res.status(404).send('Unknown path');

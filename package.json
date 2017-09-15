@@ -1,0 +1,29 @@
+{
+  "name": "botw-validator",
+  "version": "1.0.0",
+  "description": "Bank of the West Validator API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Randall Knutson <randall@form.io>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.4",
+    "formiojs": "^2.17.1",
+    "request": "^2.81.0",
+    "serve-favicon": "^2.4.4"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.0",
+    "eslint": "^4.6.1",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.3.0"
+  }
+}

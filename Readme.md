@@ -48,3 +48,35 @@ body:
 If validation is successful, returns 200 - true
 
 If validation fails, returns 400 - object
+For example, posting the following object
+
+```json
+{
+  "data": {
+    "/customer/lastname": "Doe"
+  }
+}
+```
+
+Would result in this response
+
+StatusCode: 400
+```json
+{
+    "isJoi": true,
+    "name": "ValidationError",
+    "details": [
+        {
+            "message": "\"firstName\" is required",
+            "path": "/customer/firstname",
+            "type": "any.required",
+            "context": {
+                "key": "/customer/firstname"
+            }
+        }
+    ],
+    "_object": {
+        "/customer/lastname": "Doe"
+    }
+}
+```

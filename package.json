@@ -4,7 +4,8 @@
   "description": "Bank of the West Validator API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
   },
   "author": "Randall Knutson <randall@form.io>",
   "license": "UNLICENSED",

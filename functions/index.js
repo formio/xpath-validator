@@ -2,5 +2,7 @@ module.exports = {
   getForm: require('./getForm'),
   translateError: require('./translateError'),
   validateForm: require('./validateForm'),
-  xpathToFormio: require('./xpathToFormio')
+  validateInconsistent: require('./validateInconsistent'),
+  xpathToFormio: require('./xpathToFormio'),
+  formioToXpath: require('./formioToXpath')
 }

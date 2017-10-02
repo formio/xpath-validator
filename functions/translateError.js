@@ -1,21 +1,19 @@
-const formioUtils = require('formiojs/utils');
-
 module.exports = (error, components, data) => {
-  let componentMap = {};
-  formioUtils.eachComponent(components, component => {
-    if (component.properties && component.properties.xpath) {
-      componentMap[component.key] = component.properties.xpath;
-    }
-  });
   return new Promise((resolve, reject) => {
     // Pass original data.
-    error._object = data;
-    error.details.map(detail => {
-      if (componentMap[detail.path]) {
-        detail.context.key = componentMap[detail.path];
-        detail.path = componentMap[detail.path];
+    error.details = error.details.map(detail => {
+      // Inconsistent are already translated.
+      if (detail.type === 'INCONSISTENT') {
+        return detail;
       }
-      return detail;
+
+      return {
+        key: detail.path,
+        instanceId: detail.path,
+        value: data[detail.path] || '',
+        type: detail.type === 'any.required' ? 'MISSING' : 'INVALID',
+        message: detail.message
+      };
     });
     resolve(error);
   });

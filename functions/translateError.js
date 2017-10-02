@@ -15,6 +15,10 @@ module.exports = (error, components, data) => {
         message: detail.message
       };
     });
-    resolve(error);
+    resolve({
+      status: error.name,
+      errors: error.details,
+      _object: error._object
+    });
   });
 };

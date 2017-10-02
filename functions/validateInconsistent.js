@@ -13,7 +13,6 @@ module.exports = (result) => {
 
       // Look for any keys that weren't returned. These are inconsistent.
       difference(keys(result._object), keys(result.data)).forEach(function(key) {
-        console.log(key);
         result.details.push({
           key: key,
           instanceId: key,

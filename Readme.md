@@ -37,8 +37,8 @@ For arrays, create a datagrid and name the datagrid everything that goes before 
        - Textfield = /age
         
 This form would create the following fields:
-/customer[#n]/children[#n]/name
-/customer[#n]/children[#n]/age
+ - /customer[#n]/children[#n]/name
+ - /customer[#n]/children[#n]/age
 
 ## Making the request
 Once you have configured your form you can make a request to this server to check the validation of some data. Use the xpath for each property set on the field. To do this, POST to this server's url with the form and formId from the form on the formio project.

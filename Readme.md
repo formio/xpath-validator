@@ -72,7 +72,7 @@ If validation is successful, returns 200 - object
 ```
 
 If validation fails, returns 200 - object
-For example, posting the following object
+For example
 
 ```json
 {

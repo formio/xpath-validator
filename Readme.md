@@ -31,10 +31,10 @@ In your project, create a form and add fields to it with the proper validation. 
 
 For arrays, create a datagrid and name the datagrid everything that goes before the numbers. For example:
 
-Datagrid: xpath = /customer
-    Datagrid: xpath = /children
-        Textfield = /name
-        Textfield = /age
+ - Datagrid: xpath = /customer
+    - Datagrid: xpath = /children
+       - Textfield = /name
+       - Textfield = /age
         
 This form would create the following fields:
 /customer[#n]/children[#n]/name

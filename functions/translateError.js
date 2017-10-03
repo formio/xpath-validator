@@ -8,8 +8,18 @@ module.exports = (error, components, data) => {
       }
 
       return {
-        key: detail.path,
-        instanceId: detail.path,
+        key: detail.path.map(part => {
+          if (!isNaN(part)) {
+            return '[#n]';
+          }
+          return part;
+        }).join(''),
+        instanceId: detail.path.map(part => {
+          if (!isNaN(part)) {
+            return '#' + part;
+          }
+          return part;
+        }).join(''),
         value: data[detail.path] || '',
         type: detail.type === 'any.required' ? 'MISSING' : 'INVALID',
         message: detail.message

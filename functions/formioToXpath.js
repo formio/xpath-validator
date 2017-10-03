@@ -1,23 +1,21 @@
 const formioUtils = require('formiojs/utils');
 
-const replaceKeys = (componentMap, data) => {
+const replaceKeys = (newData, path, componentMap, data) => {
   if (Array.isArray(data)) {
-    return data.map((item) => replaceKeys(componentMap, item));
+    data.map((item, index) => replaceKeys(newData, path + '#' + (index + 1), componentMap, item));
   }
   else if (typeof data === 'object') {
-    let newData = {};
     for(let key in data) {
       if (componentMap[key]) {
-        newData[componentMap[key]] = replaceKeys(componentMap, data[key]);
+        replaceKeys(newData, path + componentMap[key], componentMap, data[key]);
       }
       else {
-        newData[key] = replaceKeys(componentMap, data[key]);
+        replaceKeys(newData, path + key, componentMap, data[key]);
       }
     }
-    return newData;
   }
   else {
-    return data;
+    newData[path] = data;
   }
 };
 
@@ -30,10 +28,22 @@ module.exports = (result, components) => {
           componentMap[component.key] = component.properties.xpath;
         }
       });
-      result.data = replaceKeys(componentMap, result.data);
 
-      result.details.forEach(detail => {
-        detail.path = componentMap[detail.path] || detail.path
+      let newData = {};
+
+      replaceKeys(newData, '', componentMap, result.data);
+
+      result.data = newData;
+
+        result.details.forEach(detail => {
+        detail.path = detail.path.map(part => {
+          if (!isNaN(part)) {
+            return (part + 1).toString();
+          }
+          return componentMap.hasOwnProperty(part) ? componentMap[part] : part;
+        });
+
+        detail.path = detail.path;
       });
 
       resolve(result);

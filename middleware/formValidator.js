@@ -6,7 +6,7 @@ module.exports = (req, res) => {
       funcs.validateForm(req.url, {data}, form.components, req.body).then(result => {
         funcs.formioToXpath(result, form.components, req.body).then(result => {
           result._object = req.body;
-          result.data = result.data || req.body;
+          result.data = result.details.length ? result.data : req.body;
           funcs.validateInconsistent(result).then(result => {
             funcs.translateError(result, form.components, req.body).then(result => {
               res.status(200).send(result);

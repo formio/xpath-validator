@@ -1,26 +1,6 @@
 const formioUtils = require('formiojs/utils');
-
-const replaceKeys = (componentMap, data) => {
-  if (Array.isArray(data)) {
-    return data.map((item) => replaceKeys(componentMap, item));
-  }
-  else if (typeof data === 'object') {
-    let newData = {};
-    for(let key in data) {
-      if (componentMap[key]) {
-        newData[componentMap[key]] = replaceKeys(componentMap, data[key]);
-      }
-      else {
-        newData[key] = replaceKeys(componentMap, data[key]);
-      }
-    }
-    return newData;
-
-  }
-  else {
-    return data;
-  }
-};
+const _set = require('lodash/set');
+const _isNaN = require('lodash/isNaN');
 
 module.exports = (data, components) => {
   return new Promise((resolve, reject) => {
@@ -31,7 +11,22 @@ module.exports = (data, components) => {
           componentMap[component.properties.xpath] = component.key;
         }
       });
-      resolve(replaceKeys(componentMap, data));
+
+      let newData = {};
+      for(let key in data) {
+        let path = key.split(/#(\d)/);
+
+        // Replace path.
+        path = path.map(part => {
+          if (!isNaN(part)) {
+            return parseInt(part) - 1;
+          }
+          return componentMap.hasOwnProperty(part) ? componentMap[part] : part;
+        });
+
+        _set(newData, path, data[key]);
+      }
+      resolve(newData);
     }
     catch (e) {
       reject(e);

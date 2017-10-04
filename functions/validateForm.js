@@ -18,13 +18,16 @@ module.exports = (url, data) => {
         return reject(error);
       }
       else {
-        if (typeof body === 'boolean') {
+        if (!body.isJoi) {
           body = {
             name: 'ValidationSuccess',
-            details: []
+            details: [],
+            _object: body.data
           };
         }
-        body._object = body._validated || data.data;
+        else {
+          body._object = body._validated;
+        }
         return resolve(body, response);
       }
     });

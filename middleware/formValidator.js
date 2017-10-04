@@ -14,9 +14,7 @@ module.exports = (req, res) => {
         return funcs.validateForm(req.url, result, form.components, body).then(result => {
           return funcs.formioToXpath(result, form.components, body).then(result => {
             return funcs.validateInconsistent(result, form.components, body).then(result => {
-              return funcs.translateError(result, form.components, body).then(result => {
-                return result;
-              })
+              return funcs.translateError(result, form.components, body)
             });
           });
         });

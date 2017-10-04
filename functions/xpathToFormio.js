@@ -2,7 +2,7 @@ const formioUtils = require('formiojs/utils');
 const _set = require('lodash/set');
 const _isNaN = require('lodash/isNaN');
 
-module.exports = (data, components) => {
+module.exports = (components, data) => {
   return new Promise((resolve, reject) => {
     try {
       let componentMap = {};
@@ -26,7 +26,7 @@ module.exports = (data, components) => {
 
         _set(newData, path, data[key]);
       }
-      resolve(newData);
+      resolve({data: newData});
     }
     catch (e) {
       reject(e);

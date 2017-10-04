@@ -19,9 +19,9 @@ module.exports = (result) => {
         result.details.push({
           key: key,
           instanceId: key,
-          value: result._object[key],
+          value: result.data[key],
           type: 'INCONSISTENT',
-          message: 'Value is not consistent with other answers'
+          reason: 'Value is not consistent with other answers'
         });
       });
 

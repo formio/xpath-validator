@@ -7,6 +7,13 @@ module.exports = (error, components, data) => {
         return detail;
       }
 
+      let key = detail.path.map(part => {
+        if (!isNaN(part)) {
+          return '#' + part;
+        }
+        return part;
+      }).join('');
+
       return {
         key: detail.path.map(part => {
           if (!isNaN(part)) {
@@ -14,15 +21,10 @@ module.exports = (error, components, data) => {
           }
           return part;
         }).join(''),
-        instanceId: detail.path.map(part => {
-          if (!isNaN(part)) {
-            return '#' + part;
-          }
-          return part;
-        }).join(''),
-        value: data[detail.path] || '',
+        instanceId: key,
+        value: data[key] || '',
         type: detail.type === 'any.required' ? 'MISSING' : 'INVALID',
-        message: detail.message
+        reason: detail.message
       };
     });
     resolve({

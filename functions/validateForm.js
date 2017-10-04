@@ -24,9 +24,7 @@ module.exports = (url, data) => {
             details: []
           };
         }
-        if (body._validated) {
-          body._object = body._validated;
-        }
+        body._object = body._validated || data.data;
         return resolve(body, response);
       }
     });

@@ -31,11 +31,11 @@ module.exports = (result, components) => {
 
       let newData = {};
 
-      replaceKeys(newData, '', componentMap, result.data);
+      replaceKeys(newData, '', componentMap, result._object);
 
-      result.data = newData;
+      result._object = newData;
 
-        result.details.forEach(detail => {
+      result.details.forEach(detail => {
         detail.path = detail.path.map(part => {
           if (!isNaN(part)) {
             return (part + 1).toString();

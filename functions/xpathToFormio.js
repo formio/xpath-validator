@@ -14,7 +14,7 @@ module.exports = (components, data) => {
 
       let newData = {};
       for(let key in data) {
-        let path = key.split(/#(\d)/);
+        let path = key.split(/#(\d)/).filter(item => item);
 
         // Replace path.
         path = path.map(part => {

@@ -6,9 +6,9 @@ module.exports = (components, data) => {
   return new Promise((resolve, reject) => {
     try {
       let componentMap = {};
-      formioUtils.eachComponent(components, component => {
+      formioUtils.eachComponent(components, (component, path) => {
         if (component.properties && component.properties.xpath) {
-          componentMap[component.properties.xpath] = component.key;
+          componentMap[component.properties.xpath] = path;
         }
       });
 
@@ -24,7 +24,22 @@ module.exports = (components, data) => {
           return componentMap.hasOwnProperty(part) ? componentMap[part] : part;
         });
 
-        _set(newData, path, data[key]);
+        let newPath = [];
+        path.forEach(part => {
+          if (typeof (part) === 'string') {
+            let parts = part.split('.');
+            parts.forEach(subpart => {
+              if (!newPath.includes(subpart)) {
+                newPath.push(subpart);
+              }
+            });
+          }
+          else {
+            newPath.push(part);
+          }
+        });
+
+        _set(newData, newPath, data[key]);
       }
       resolve({data: newData});
     }

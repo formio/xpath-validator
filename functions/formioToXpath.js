@@ -10,12 +10,14 @@ const replaceKeys = (newData, path, componentMap, data) => {
         replaceKeys(newData, path + componentMap[key], componentMap, data[key]);
       }
       else {
-        replaceKeys(newData, path + key, componentMap, data[key]);
+        replaceKeys(newData, path, componentMap, data[key]);
       }
     }
   }
   else {
-    newData[path] = data;
+    if (path) {
+      newData[path] = data;
+    }
   }
 };
 
@@ -42,8 +44,6 @@ module.exports = (result, components) => {
           }
           return componentMap.hasOwnProperty(part) ? componentMap[part] : part;
         });
-
-        detail.path = detail.path;
       });
 
       resolve(result);

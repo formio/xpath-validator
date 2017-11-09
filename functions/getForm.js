@@ -5,7 +5,7 @@ module.exports = (url) => {
   return new Promise((resolve, reject) => {
     request({
       method: 'GET',
-      uri: config.formioServer + url,
+      uri: config.formioServer + url + '?full=true',
       headers: {
         'x-token': config.apiKey
       }

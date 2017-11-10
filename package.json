@@ -1,7 +1,7 @@
 {
-  "name": "botw-validator",
+  "name": "xpath-validator",
   "version": "1.0.0",
-  "description": "Bank of the West Validator API",
+  "description": "Xpath Validator API",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,7 +15,7 @@
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
     "express": "^4.15.4",
-    "formiojs": "^2.21.3",
+    "formiojs": "^2.22.0",
     "lodash": "^4.17.4",
     "q": "^1.5.0",
     "request": "^2.81.0",

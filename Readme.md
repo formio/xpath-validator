@@ -3,7 +3,7 @@
 ## Description
 The XPath Validator is a nodejs express application that operates as a Validation API interface with Form.io. It will accept an xpath based data model and perform a transformation and validate the data against a Form.io form.
 
-**Formio Server Version** Please note that the validator will only work against Formio Server versions 5.0.0-rc.11 or later.
+**Formio Server Version** Please note that the validator will only work against Formio Server versions 4.2.1 or 5.0.0-rc.11 or later.
 
 ## Installation
 To install this library, clone the repository from https://github.com/formio/xpath-validator

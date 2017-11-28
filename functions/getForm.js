@@ -13,8 +13,16 @@ module.exports = (url) => {
       if (error) {
         return reject(error);
       }
+      else if (response.statusCode !== 200) {
+        return reject(body);
+      }
       else {
-        return resolve(JSON.parse(body), response);
+        try {
+          return resolve(JSON.parse(body), response);
+        }
+        catch (error) {
+          return reject(body);
+        }
       }
     });
   });

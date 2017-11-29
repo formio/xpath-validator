@@ -1,21 +1,25 @@
 const formioUtils = require('formiojs/utils');
+const _set = require('lodash/set');
 
-const replaceKeys = (newData, path, componentMap, data) => {
+const replaceKeys = (newData, path, componentMap, data, indices) => {
   if (Array.isArray(data)) {
-    data.map((item, index) => replaceKeys(newData, path + '#' + (index + 1), componentMap, item));
+    data.map((item, index) => replaceKeys(newData, path, componentMap, item, indices.concat([index])));
   }
   else if (typeof data === 'object') {
     for(let key in data) {
       if (componentMap[key]) {
-        replaceKeys(newData, path + componentMap[key], componentMap, data[key]);
+        replaceKeys(newData, componentMap[key], componentMap, data[key], indices);
       }
       else {
-        replaceKeys(newData, path, componentMap, data[key]);
+        replaceKeys(newData, path, componentMap, data[key], indices);
       }
     }
   }
   else {
     if (path) {
+      indices.forEach(index => {
+        path = path.replace('[#n]', '#' + (index + 1));
+      });
       newData[path] = data;
     }
   }
@@ -24,7 +28,7 @@ const replaceKeys = (newData, path, componentMap, data) => {
 module.exports = (result, components) => {
   return new Promise((resolve, reject) => {
     try {
-      let componentMap = {};
+      const componentMap = {};
       formioUtils.eachComponent(components, component => {
         if (component.properties && component.properties.xpath) {
           componentMap[component.key] = component.properties.xpath;
@@ -33,17 +37,24 @@ module.exports = (result, components) => {
 
       let newData = {};
 
-      replaceKeys(newData, '', componentMap, result._object);
+      replaceKeys(newData, '', componentMap, result._object, []);
 
       result._object = newData;
 
       result.details.forEach(detail => {
-        detail.path = detail.path.map(part => {
-          if (!isNaN(part)) {
-            return (part + 1).toString();
-          }
-          return componentMap.hasOwnProperty(part) ? componentMap[part] : part;
-        });
+        if (!Array.isArray(detail.path)) {
+          detail.path = [detail.path];
+        }
+
+        const lastPart = detail.path[detail.path.length - 1];
+        detail.key = componentMap.hasOwnProperty(lastPart) ? componentMap[lastPart] : lastPart;
+        detail.indices = detail.path
+          .map(part => {
+            if (!isNaN(part)) {
+              return '#' + (part + 1).toString();
+            }
+          })
+          .filter(item => item);
       });
 
       resolve(result);

@@ -1,45 +1,44 @@
 const formioUtils = require('formiojs/utils');
 const _set = require('lodash/set');
-const _isNaN = require('lodash/isNaN');
 
 module.exports = (components, data) => {
   return new Promise((resolve, reject) => {
     try {
-      let componentMap = {};
+      const componentMap = {};
+      const datagrids = {};
       formioUtils.eachComponent(components, (component, path) => {
         if (component.properties && component.properties.xpath) {
           componentMap[component.properties.xpath] = path;
         }
+        if (component.type === 'datagrid') {
+          datagrids[component.key] = component;
+        }
       });
 
       let newData = {};
-      for(let key in data) {
-        let path = key.split(/#(\d)/).filter(item => item);
+      for (let instanceId in data) {
+        const key = instanceId.replace(/#\d+/g, '[#n]');
+        const indexes = instanceId.match(/#\d+/g);
+        let path = componentMap.hasOwnProperty(key) ? componentMap[key] : key;
 
-        // Replace path.
-        path = path.map(part => {
-          if (!isNaN(part)) {
-            return parseInt(part) - 1;
+        // Support datagrid nesting.
+        path = path.split('.').reduce((prev, part) => {
+          if (datagrids.hasOwnProperty(part) && indexes && indexes.length) {
+            let index = indexes.shift();
+            index = parseInt(index.replace('#', '') - 1);
+            part = part + '[' + index + ']'
           }
-          return componentMap.hasOwnProperty(part) ? componentMap[part] : part;
-        });
+          return prev ? prev + '.' + part : part;
+        }, '');
 
-        let newPath = [];
-        path.forEach(part => {
-          if (typeof (part) === 'string') {
-            let parts = part.split('.');
-            parts.forEach(subpart => {
-              if (!newPath.includes(subpart)) {
-                newPath.push(subpart);
-              }
-            });
-          }
-          else {
-            newPath.push(part);
-          }
-        });
+        // Support multi-value fields.
+        if (indexes && indexes.length) {
+          let index = indexes.shift();
+          index = parseInt(index.replace('#', '') - 1);
+          path = path + '[' + index + ']'
+        }
 
-        _set(newData, newPath, data[key]);
+        _set(newData, path, data[instanceId]);
       }
       resolve({data: newData});
     }

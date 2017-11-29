@@ -29,18 +29,20 @@ npm start
 ```
 
 ## Configuring the form
-In your project, create a form and add fields to it with the proper validation. Then go to the API tab for each component and open the ```Custom Properties``` option. Add an ```xpath``` property with whatever xpath you want. For example: /customer/firstname
+In your project, create a form and add fields to it with the proper validation. Then go to the API tab for each component and open the ```Custom Properties``` option. Add an ```xpath``` property with whatever xpath you want. For example: Customer/firstname
 
-For arrays, create a datagrid and name the datagrid everything that goes before the numbers. For example:
+Each field should contain the FULL xpath path to the value.
 
- - Datagrid: xpath = /customer
-    - Datagrid: xpath = /children
-       - Textfield = /name
-       - Textfield = /age
-        
-This form would create the following fields:
- - /customer[#n]/children[#n]/name
- - /customer[#n]/children[#n]/age
+Fields in a datagrid must contain a [#n] in the xpath for each datagrid deep.
+
+For example, create the following fields within a datagrid inside a datagrid:
+ - Customer[#n]/children[#n]/name
+ - Customer[#n]/children[#n]/age
+ 
+Multiple value fields must end in [#n]
+
+For example:
+ - Options[#n]
 
 ## Making the request
 Once you have configured your form you can make a request to this server to check the validation of some data. Use the xpath for each property set on the field. To do this, POST to this server's url with the form and formId from the form on the formio project.
@@ -50,10 +52,10 @@ POST https://xpathvalidator.myserver.com/form/abc123 (where abc123 is the formId
 body:
 ```json
 {
-    "/customer/firstname": "John",
-    "/customer/lastname": "Doe",
-    "/customer#1/children#1/name": "frank",
-    "/customer#1/children#2/name": "Becky"
+    "Customer/firstname": "John",
+    "Customer/lastname": "Doe",
+    "Customer#1/children#1/name": "frank",
+    "Customer#1/children#2/name": "Becky"
 }
 ```
 
@@ -65,10 +67,10 @@ If validation is successful, returns 200 - object
     "status": "ValidationSuccess",
     "errors": [],
     "_object": {
-        "/customer/firstname": "John",
-        "/customer/lastname": "Doe",
-        "/customer#1/children#1/name": "frank",
-        "/customer#1/children#2/name": "Becky"
+        "Customer/firstname": "John",
+        "Customer/lastname": "Doe",
+        "Customer#1/children#1/name": "frank",
+        "Customer#1/children#2/name": "Becky"
     }
 }
 ```
@@ -81,29 +83,29 @@ For example
     "status": "ValidationError",
     "errors": [
         {
-            "key": "/customer/lastname",
-            "instanceId": "/customer/lastname",
+            "key": "Customer/lastname",
+            "instanceId": "Customer/lastname",
             "value": "",
             "type": "MISSING",
             "message": "\"lastName\" is required"
         },
         {
-            "key": "/customer[#n]/children[#n]/age",
-            "instanceId": "/customer#1/children#1/age",
+            "key": "Customer[#n]/children[#n]/age",
+            "instanceId": "Customer#1/children#1/age",
             "value": "",
             "type": "MISSING",
             "message": "\"age\" is required"
         },
         {
-            "key": "/customer[#n]/children[#n]/name",
-            "instanceId": "/customer#1/children#2/name",
+            "key": "Customer[#n]/children[#n]/name",
+            "instanceId": "Customer#1/children#2/name",
             "value": "",
             "type": "INVALID",
             "message": "\"name\" must be frank"
         },
         {
-            "key": "/customer[#n]/children[#n]/age",
-            "instanceId": "/customer#1/children#2/age",
+            "key": "Customer[#n]/children[#n]/age",
+            "instanceId": "Customer#1/children#2/age",
             "value": "",
             "type": "MISSING",
             "message": "\"age\" is required"
@@ -117,10 +119,10 @@ For example
         }
     ],
     "_object": {
-        "/customer/firstname": "Joe",
+        "Customer/firstname": "Joe",
         "/bad": "bad",
-        "/customer#1/children#1/name": "frank",
-        "/customer#1/children#2/name": "Becky"
+        "Customer#1/children#1/name": "frank",
+        "Customer#1/children#2/name": "Becky"
     }
 }
 ```

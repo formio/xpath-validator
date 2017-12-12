@@ -6,7 +6,7 @@ module.exports = (error, components, data) => {
       delete detail.indices;
 
       // Inconsistent are already translated.
-      if (detail.type === 'INCONSISTENT') {
+      if (detail.type === 'INCONSISTENT|WARNING') {
         return detail;
       }
 
@@ -18,10 +18,12 @@ module.exports = (error, components, data) => {
       const lastPart = detail.path[detail.path.length - 1];
 
       return {
-        key: detail.key,
+        key: detail.key + (detail.label ? '|' + detail.label : ''),
+        label: detail.label,
         instanceId: instanceId,
         value: data[instanceId] || '',
-        type: detail.type === 'any.required' ? 'MISSING' : 'INVALID',
+        type: detail.type === 'any.required' ? 'MISSING|ERROR' : 'INVALID|ERROR',
+        severityLevel: 'ERROR',
         reason: detail.message.replace(lastPart, instanceId)
       };
     });

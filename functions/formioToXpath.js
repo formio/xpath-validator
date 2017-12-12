@@ -8,7 +8,7 @@ const replaceKeys = (newData, path, componentMap, data, indices) => {
   else if (typeof data === 'object') {
     for(let key in data) {
       if (componentMap[key]) {
-        replaceKeys(newData, componentMap[key], componentMap, data[key], indices);
+        replaceKeys(newData, componentMap[key].properties.xpath, componentMap, data[key], indices);
       }
       else {
         replaceKeys(newData, path, componentMap, data[key], indices);
@@ -31,7 +31,7 @@ module.exports = (result, components) => {
       const componentMap = {};
       formioUtils.eachComponent(components, component => {
         if (component.properties && component.properties.xpath) {
-          componentMap[component.key] = component.properties.xpath;
+          componentMap[component.key] = component;
         }
       });
 
@@ -47,7 +47,8 @@ module.exports = (result, components) => {
         }
 
         const lastPart = detail.path[detail.path.length - 1];
-        detail.key = componentMap.hasOwnProperty(lastPart) ? componentMap[lastPart] : lastPart;
+        detail.key = componentMap.hasOwnProperty(lastPart) ? componentMap[lastPart].properties.xpath : lastPart;
+        detail.label = componentMap.hasOwnProperty(lastPart) ? componentMap[lastPart].label || componentMap[lastPart].title || '' : lastPart;
         detail.indices = detail.path
           .map(part => {
             if (!isNaN(part)) {

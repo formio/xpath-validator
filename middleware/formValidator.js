@@ -8,6 +8,7 @@ module.exports = (req, res) => {
     isArray = false;
     bodies = [bodies];
   }
+  console.log('Request: ' + req.url);
   funcs.getForm(req.url).then(form => {
     return q.all(bodies.map(body => {
       return funcs.xpathToFormio(form.components, body).then(result => {
@@ -21,6 +22,7 @@ module.exports = (req, res) => {
       });
     }))
       .done((result) => {
+        console.log('Complete: ' + req.url);
         if (isArray) {
           res.status(200).send(result);
         }

@@ -8,7 +8,8 @@ module.exports = (components, data) => {
       const datagrids = {};
       formioUtils.eachComponent(components, (component, path) => {
         if (component.properties && component.properties.xpath) {
-          componentMap[component.properties.xpath] = path;
+          componentMap[component.properties.xpath] = componentMap[component.properties.xpath] || [];
+          componentMap[component.properties.xpath].push(path);
         }
         if (component.type === 'datagrid') {
           datagrids[component.key] = component;
@@ -19,26 +20,28 @@ module.exports = (components, data) => {
       for (let instanceId in data) {
         const key = instanceId.replace(/#\d+/g, '[#n]');
         const indexes = instanceId.match(/#\d+/g);
-        let path = componentMap.hasOwnProperty(key) ? componentMap[key] : key;
+        let paths = componentMap.hasOwnProperty(key) ? componentMap[key] : key;
 
-        // Support datagrid nesting.
-        path = path.split('.').reduce((prev, part) => {
-          if (datagrids.hasOwnProperty(part) && indexes && indexes.length) {
+        paths.forEach(path => {
+          // Support datagrid nesting.
+          path = path.split('.').reduce((prev, part) => {
+            if (datagrids.hasOwnProperty(part) && indexes && indexes.length) {
+              let index = indexes.shift();
+              index = parseInt(index.replace('#', '') - 1);
+              part = part + '[' + index + ']'
+            }
+            return prev ? prev + '.' + part : part;
+          }, '');
+
+          // Support multi-value fields.
+          if (indexes && indexes.length) {
             let index = indexes.shift();
             index = parseInt(index.replace('#', '') - 1);
-            part = part + '[' + index + ']'
+            path = path + '[' + index + ']'
           }
-          return prev ? prev + '.' + part : part;
-        }, '');
 
-        // Support multi-value fields.
-        if (indexes && indexes.length) {
-          let index = indexes.shift();
-          index = parseInt(index.replace('#', '') - 1);
-          path = path + '[' + index + ']'
-        }
-
-        _set(newData, path, data[instanceId]);
+          _set(newData, path, data[instanceId]);
+        });
       }
       resolve({data: newData});
     }

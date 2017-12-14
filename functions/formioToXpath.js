@@ -45,6 +45,7 @@ module.exports = (result, components) => {
         if (!Array.isArray(detail.path)) {
           detail.path = [detail.path];
         }
+        detail.original = detail.path;
 
         const lastPart = detail.path[detail.path.length - 1];
         detail.key = componentMap.hasOwnProperty(lastPart) ? componentMap[lastPart].properties.xpath : lastPart;

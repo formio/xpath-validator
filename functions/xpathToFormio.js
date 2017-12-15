@@ -20,7 +20,7 @@ module.exports = (components, data) => {
       for (let instanceId in data) {
         const key = instanceId.replace(/#\d+/g, '[#n]');
         const indexes = instanceId.match(/#\d+/g);
-        let paths = componentMap.hasOwnProperty(key) ? componentMap[key] : key;
+        let paths = componentMap.hasOwnProperty(key) ? componentMap[key] : [key];
 
         paths.forEach(path => {
           // Support datagrid nesting.

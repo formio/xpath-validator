@@ -20,7 +20,7 @@ module.exports = (error, components, data) => {
       return {
         key: detail.key + (detail.label ? '|' + detail.label : ''),
         label: detail.label,
-        path: detail.original,
+        // path: detail.original,
         instanceId: instanceId,
         value: data[instanceId] || '',
         type: detail.type === 'any.required' ? 'MISSING|ERROR' : 'INVALID|ERROR',

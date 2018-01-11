@@ -1,6 +1,6 @@
 {
   "name": "xpath-validator",
-  "version": "1.1.0",
+  "version": "1.1.7",
   "description": "Xpath Validator API",
   "main": "index.js",
   "scripts": {

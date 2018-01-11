@@ -9,7 +9,7 @@ module.exports = (url, data, components) => {
   // those rows return errors instead of the datagrid itself.
   formioUtils.eachComponent(components, (component, path) => {
     if (component.type === 'datagrid' && component.validate && component.validate.minLength > 0) {
-      let value = _.get(submitData, path, []);
+      let value = _.get(submitData, 'data.' + path, []);
       if (!Array.isArray(value)) {
         value = [];
       }

@@ -8,13 +8,18 @@ module.exports = (req, res) => {
     isArray = false;
     bodies = [bodies];
   }
-  console.log('Request: ' + req.url);
+  console.log(req.url + ': Getting form');
   funcs.getForm(req.url).then(form => {
     return q.all(bodies.map(body => {
+      console.log(req.url + ': XPath to Form.io');
       return funcs.xpathToFormio(form.components, body).then(result => {
+        console.log(req.url + ': Validating Form');
         return funcs.validateForm(req.url, result, form.components, body).then(result => {
+          console.log(req.url + ': Form.io to XPath');
           return funcs.formioToXpath(result, form.components, body).then(result => {
+            console.log(req.url + ': Validating Inconsistent results');
             return funcs.validateInconsistent(result, form.components, body).then(result => {
+              console.log(req.url + ': Translating errors');
               return funcs.translateError(result, form.components, body)
             });
           });
@@ -22,7 +27,7 @@ module.exports = (req, res) => {
       });
     }))
       .done((result) => {
-        console.log('Complete: ' + req.url);
+        console.log(req.url + ': Request succeeded');
         if (isArray) {
           res.status(200).send(result);
         }
@@ -30,5 +35,8 @@ module.exports = (req, res) => {
           res.status(200).send(result[0]);
         }
       });
-  }).catch(err => res.status(400).send(err.toString()));
+  }).catch(err => {
+    console.log(req.url + ': Error result: ' + err);
+    res.status(400).send(err.toString())
+  });
 };

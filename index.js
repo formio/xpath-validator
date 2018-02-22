@@ -48,6 +48,6 @@ console.log('Listening on port ' + config.port);
 app.listen(config.port);
 
 process.on('uncaughtException', function (err) {
-  console.error(JSON.stringify(err));
+  console.error(err);
   console.log("Node NOT Exiting...");
 });

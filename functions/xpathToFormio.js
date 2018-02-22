@@ -9,7 +9,10 @@ module.exports = (components, data) => {
       formioUtils.eachComponent(components, (component, path) => {
         if (component.properties && component.properties.xpath) {
           componentMap[component.properties.xpath] = componentMap[component.properties.xpath] || [];
-          componentMap[component.properties.xpath].push(path);
+          componentMap[component.properties.xpath].push({
+            path: path,
+            component: component
+          });
         }
         if (component.type === 'datagrid') {
           datagrids[component.key] = component;
@@ -19,12 +22,16 @@ module.exports = (components, data) => {
       let newData = {};
       for (let instanceId in data) {
         const key = instanceId.replace(/#\d+/g, '[#n]');
-        let paths = componentMap.hasOwnProperty(key) ? componentMap[key] : [key];
+        let matches = componentMap.hasOwnProperty(key) ? componentMap[key] : null;
+        // Fallback to instanceId if available.
+        if (!matches) {
+          matches = componentMap.hasOwnProperty(instanceId) ? componentMap[instanceId] : [key];
+        }
 
-        paths.forEach(path => {
+        matches.forEach(match => {
           const indexes = instanceId.match(/#\d+/g);
           // Support datagrid nesting.
-          path = path.split('.').reduce((prev, part) => {
+          let path = match.path.split('.').reduce((prev, part) => {
             if (datagrids.hasOwnProperty(part) && indexes && indexes.length) {
               let index = indexes.shift();
               index = parseInt(index.replace('#', '') - 1);
@@ -34,7 +41,7 @@ module.exports = (components, data) => {
           }, '');
 
           // Support multi-value fields.
-          if (indexes && indexes.length) {
+          if (indexes && indexes.length && match.component.multiple) {
             let index = indexes.shift();
             index = parseInt(index.replace('#', '') - 1);
             path = path + '[' + index + ']'

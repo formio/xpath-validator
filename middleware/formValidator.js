@@ -8,18 +8,18 @@ module.exports = (req, res) => {
     isArray = false;
     bodies = [bodies];
   }
-  console.log(req.url + ': Getting form');
+  console.log(new Date(), req.url + ': Getting form');
   funcs.getForm(req.url).then(form => {
     return q.all(bodies.map(body => {
-      console.log(req.url + ': XPath to Form.io');
+      console.log(new Date(), req.url + ': XPath to Form.io');
       return funcs.xpathToFormio(form.components, body).then(result => {
-        console.log(req.url + ': Validating Form');
+        console.log(new Date(), req.url + ': Validating Form');
         return funcs.validateForm(req.url, result, form.components, body).then(result => {
-          console.log(req.url + ': Form.io to XPath');
+          console.log(new Date(), req.url + ': Form.io to XPath');
           return funcs.formioToXpath(result, form.components, body).then(result => {
-            console.log(req.url + ': Validating Inconsistent results');
+            console.log(new Date(), req.url + ': Validating Inconsistent results');
             return funcs.validateInconsistent(result, form.components, body).then(result => {
-              console.log(req.url + ': Translating errors');
+              console.log(new Date(), req.url + ': Translating errors');
               return funcs.translateError(result, form.components, body)
             });
           });

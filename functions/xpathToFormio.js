@@ -10,12 +10,15 @@ module.exports = (components, data) => {
         if (component.properties && component.properties.xpath) {
           componentMap[component.properties.xpath] = componentMap[component.properties.xpath] || [];
           componentMap[component.properties.xpath].push({
-            path: path,
-            component: component
+            path,
+            component
           });
         }
         if (component.type === 'datagrid') {
-          datagrids[component.key] = component;
+          datagrids[component.key] = {
+            path,
+            component
+          };
         }
       });
 
@@ -25,7 +28,7 @@ module.exports = (components, data) => {
         let matches = componentMap.hasOwnProperty(key) ? componentMap[key] : null;
         // Fallback to instanceId if available.
         if (!matches) {
-          matches = componentMap.hasOwnProperty(instanceId) ? componentMap[instanceId] : [key];
+          matches = componentMap.hasOwnProperty(instanceId) ? componentMap[instanceId] : [{path: key, component: {}}];
         }
 
         matches.forEach(match => {

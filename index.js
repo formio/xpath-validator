@@ -20,7 +20,7 @@ app.use(cors());
 app.use(favicon('./favicon.png'));
 
 app.use((req, res, next) => {
-  console.log(req.url + ': Request initiated');
+  console.log(new Date(), req.url + ': Request initiated');
   next();
 });
 
@@ -31,9 +31,9 @@ app.use(bodyParser.json({limit: '16mb'}));
 app.post('/form/:formId', require('./middleware/formValidator'));
 
 app.use((err, req, res, next) => {
-  console.log(req.url + ': Error Occurred');
+  console.log(new Date(), req.url + ': Error Occurred');
   console.log(err);
-  console.log(req.url + ': Body contents');
+  console.log(new Date(), req.url + ': Body contents');
   console.log(JSON.stringify(req.body));
   next();
 });
@@ -48,6 +48,6 @@ console.log('Listening on port ' + config.port);
 app.listen(config.port);
 
 process.on('uncaughtException', function (err) {
-  console.error(err);
-  console.log("Node NOT Exiting...");
+  console.error(new Date(), err);
+  console.log(new Date(), "Node NOT Exiting...");
 });

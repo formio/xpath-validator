@@ -43,10 +43,9 @@ module.exports = (result, components, data) => {
         return resolve(result);
       }
 
-      result.name = 'ValidationError';
-
       // Look for any keys that weren't returned. These are inconsistent.
       difference(keys(data), keys(result._object)).forEach(function(key) {
+        result.name = 'ValidationError';
         let label = '';
         if (componentMap.hasOwnProperty(key)) {
           let component;

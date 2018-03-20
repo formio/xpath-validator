@@ -47,7 +47,13 @@ module.exports = (result, components) => {
         }
         detail.original = detail.path;
 
-        const lastPart = detail.path[detail.path.length - 1];
+        let lastPart = detail.path[detail.path.length - 1];
+
+        // If lastpart is a number, key is the item before it.
+        if (typeof lastPart !== 'string') {
+          lastPart = detail.path[detail.path.length - 2];
+        }
+
         detail.key = componentMap.hasOwnProperty(lastPart) ? componentMap[lastPart].properties.xpath : lastPart;
         detail.label = componentMap.hasOwnProperty(lastPart) ? componentMap[lastPart].label || componentMap[lastPart].title || '' : lastPart;
         detail.indices = detail.path

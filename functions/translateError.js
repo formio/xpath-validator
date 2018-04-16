@@ -6,7 +6,8 @@ module.exports = (error, components, data) => {
       delete detail.indices;
 
       // Inconsistent are already translated.
-      if (detail.type === 'INCONSISTENT|WARNING') {
+      if (detail.after) {
+        delete detail.after;
         result.push(detail);
         return result;
       }
